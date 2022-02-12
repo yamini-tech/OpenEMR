@@ -1,24 +1,27 @@
-*** Settings ***
-Documentation      This suit file handles all the test case related to the
-...     valid credentials
+* Settings *
+Documentation   This suite file verifies all test cases related to Invalid credentials
+
 Library     SeleniumLibrary
+Library     OperatingSystem
+
 Resource    ../base/common_functionality.resource
 
 Test Setup      Launch Browser
 Test Teardown   End Browser
 
-Test Template   Verify Valid Credentials Template
+Test Template       Verify Invalid Credentials Template
 
-*** Test Cases ***
-TC1     admin      pass     English (Indian)        OpenEMR
-TC2     physician       physician       English (Indian)        OpenEMR
+* Test Cases *
+TC1     john   john123    Dutch    Invalid username or password
+TC2     peter   peter123   Danish    Invalid username or password
+TC3     Mark    Mark123     Greek   Invalid username or password
 
+* Keywords *
+Verify Invalid Credentials Template
+     [Arguments]     ${username}     ${password}     ${language}     ${expected_title}
+     Input Text    id=authUser   ${username}
+     Input Password    id=clearPass    ${password}
+     Select From List By Label    name=languageChoice     ${language}
+     Click Element    xpath=//button[@type='submit']
+     Element Should Contain    xpath=//div[contains(text(),'Invalid')]    ${expected_title}
 
-*** Keywords ***
-Verify Valid Credentials Template
-    [Arguments]     ${username}     ${password}     ${language}     ${expected_title}
-    Input Text    id=authUser    ${username}
-    Input Password    id=clearPass    ${password}
-    Select From List By Label    name=languageChoice    ${language}
-    Click Element    xpath=//button[@type='submit']
-    Title Should Be    xpath=//div[contains(text(),'Invalid')]     ${expected_title}
